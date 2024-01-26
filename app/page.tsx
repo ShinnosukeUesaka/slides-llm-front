@@ -267,7 +267,7 @@ const SlideShowComponent = () => {
   let carouselItems = slideContents.map((slideContent, index) => {
     let slideComponent;
     if (slideContent.template_id === "menu") {
-      if (!loading) {
+      if (loading) {
         slideComponent = (
         <div className="flex flex-col items-center h-full w-full p-12">
           <div className="w-full h-full">
@@ -344,7 +344,7 @@ const SlideShowComponent = () => {
         <Input
           className="flex-grow text-white bg-black placeholder-white border-0 rounded-3xl focus:outline-none focus-visible:ring-offset-0 focus:ring-0"
           id="input-field"
-          placeholder="Write you want to learn"
+          placeholder="What do you want to learn? Ex. Tell me about Alan Turing"
           ref={inputRef}
           onKeyDown={(event) => {if (event.key === "Enter") {startEverything()}}}
         />
