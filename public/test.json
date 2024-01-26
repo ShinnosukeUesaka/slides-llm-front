@@ -1,0 +1,197 @@
+[
+   {
+       "type": "show_slide",
+       "content": {
+           "template_id": "first_slide",
+           "title": "Exploring the Future of AI",
+           "sub_title": "Diving into Advances and Ethical Considerations",
+           "image": "https://images.newscientist.com/wp-content/uploads/2019/07/15113536/ff87k9-copy1.jpg"
+       }
+   },
+   {
+       "type": "display_element",
+       "content": {
+           "ids": [
+               "title",
+               "sub_title"
+           ]
+       }
+   },
+   {
+       "type": "play_audio",
+       "content": {
+           "url": "https://storage.googleapis.com/slidesllm.appspot.com/audio/5bead75e-c4e3-4c56-9210-a852b1d88887.mp3"
+       }
+   },
+   {
+       "type": "display_element",
+       "content": {
+           "ids": [
+               "image"
+           ]
+       }
+   },
+   {
+       "type": "play_audio",
+       "content": {
+           "url": "https://storage.googleapis.com/slidesllm.appspot.com/audio/97cdef16-87d8-4fb3-8e76-eb2a3096c93d.mp3"
+       }
+   },
+   {
+       "type": "show_slide",
+       "content": {
+           "template_id": "three_elements",
+           "title": "Key Advances in AI Technology",
+           "elements": [
+               {
+                   "title": "Machine Learning",
+                   "details": "Algorithms improve over time with data. Used in various industries."
+               },
+               {
+                   "title": "Natural Language Processing",
+                   "details": "Enables machines to understand human language. Powers voice assistants and chatbots."
+               },
+               {
+                   "title": "Computer Vision",
+                   "details": "Machines interpret and understand visual data. Used in facial recognition."
+               }
+           ]
+       }
+   },
+   {
+       "type": "display_element",
+       "content": {
+           "ids": [
+               "title"
+           ]
+       }
+   },
+   {
+       "type": "play_audio",
+       "content": {
+           "url": "https://storage.googleapis.com/slidesllm.appspot.com/audio/3ac24bc8-289f-4c9b-a615-9ace358d0c27.mp3"
+       }
+   },
+   {
+       "type": "display_element",
+       "content": {
+           "ids": [
+               "element_1"
+           ]
+       }
+   },
+   {
+       "type": "play_audio",
+       "content": {
+           "url": "https://storage.googleapis.com/slidesllm.appspot.com/audio/74321030-66c6-40ee-bbdc-3e7a11784efa.mp3"
+       }
+   },
+   {
+       "type": "display_element",
+       "content": {
+           "ids": [
+               "element_2"
+           ]
+       }
+   },
+   {
+       "type": "play_audio",
+       "content": {
+           "url": "https://storage.googleapis.com/slidesllm.appspot.com/audio/e6604df4-3553-4ecd-a5e8-e1ab1ed45752.mp3"
+       }
+   },
+   {
+       "type": "display_element",
+       "content": {
+           "ids": [
+               "element_3"
+           ]
+       }
+   },
+   {
+       "type": "play_audio",
+       "content": {
+           "url": "https://storage.googleapis.com/slidesllm.appspot.com/audio/aae08cca-8ff1-4029-b0f4-183e16a7f599.mp3"
+       }
+   },
+   {
+       "type": "show_slide",
+       "content": {
+           "template_id": "timeline",
+           "title": "AI Ethics Timeline",
+           "elements": [
+               {
+                   "title": "Formulation of AI Ethics",
+                   "time": "2010s",
+                   "details": "Ethics codes emerge"
+               },
+               {
+                   "title": "Regulation and Compliance",
+                   "time": "2020s",
+                   "details": "Legal frameworks develop"
+               },
+               {
+                   "title": "Future Challenges",
+                   "time": "2030s",
+                   "details": "Ongoing ethical debates"
+               }
+           ]
+       }
+   },
+   {
+       "type": "display_element",
+       "content": {
+           "ids": [
+               "title"
+           ]
+       }
+   },
+   {
+       "type": "play_audio",
+       "content": {
+           "url": "https://storage.googleapis.com/slidesllm.appspot.com/audio/7c93968b-92f8-452c-b4e1-725cfbd1f17c.mp3"
+       }
+   },
+   {
+       "type": "display_element",
+       "content": {
+           "ids": [
+               "element_1"
+           ]
+       }
+   },
+   {
+       "type": "play_audio",
+       "content": {
+           "url": "https://storage.googleapis.com/slidesllm.appspot.com/audio/c4b0b955-5b7d-4075-ac65-62fe8bb91cee.mp3"
+       }
+   },
+   {
+       "type": "display_element",
+       "content": {
+           "ids": [
+               "element_2"
+           ]
+       }
+   },
+   {
+       "type": "play_audio",
+       "content": {
+           "url": "https://storage.googleapis.com/slidesllm.appspot.com/audio/399963ae-9add-4f09-833e-989db1980858.mp3"
+       }
+   },
+   {
+       "type": "display_element",
+       "content": {
+           "ids": [
+               "element_3"
+           ]
+       }
+   },
+   {
+       "type": "play_audio",
+       "content": {
+           "url": "https://storage.googleapis.com/slidesllm.appspot.com/audio/5c53b776-fbde-4550-ab15-ace3008584de.mp3"
+       }
+   }
+]
