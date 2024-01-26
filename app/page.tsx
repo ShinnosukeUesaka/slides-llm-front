@@ -268,8 +268,8 @@ const SlideShowComponent = () => {
     let slideComponent;
     if (slideContent.template_id === "menu") {
       if (loading) {
-        slideComponent = [(<div className="loader">
-        <div className="loader-inner">
+        slideComponent = (<div className="loader">
+        <div className="loader-inner" key={index}>
           <div className="loader-line-wrap">
             <div className="loader-line"></div>
           </div>
@@ -286,9 +286,9 @@ const SlideShowComponent = () => {
             <div className="loader-line"></div>
           </div>
         </div>
-      </div>)]
+      </div>)
       } else {
-        slideComponent = [(<div className="h-full w-full flex justify-center items-center text-5xl align-middle text-center">Slides<br/>LLM</div>)]
+        slideComponent = (<div className="h-full w-full flex justify-center items-center text-5xl align-middle text-center">Slides<br/>LLM</div>)
       }
     } else if (slideContent.template_id === "first_slide") {
       slideComponent = (
@@ -305,7 +305,6 @@ const SlideShowComponent = () => {
         />
       );
     } else if (slideContent.template_id === "timeline") {
-      console.log("Timeline visible content:", visibleContents[index]);
       slideComponent = (
         <TimeLine
           content={slideContent}
@@ -328,8 +327,6 @@ const SlideShowComponent = () => {
       <Carousel className="w-full" setApi={setApi}>
         <CarouselContent>{carouselItems}</CarouselContent>
       </Carousel>
-      {/* <div className="h-40 w-32 bg-green-50">
-      </div> */}
 
       <div className="w-full max-w-lg flex justify-between items-center relative -top-12 gap-4 bg-black rounded-3xl p-2">
         <Label className="sr-only" htmlFor="input-field">
