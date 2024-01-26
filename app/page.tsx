@@ -161,7 +161,7 @@ const SlideShowComponent = () => {
           )
           .then((response) => {
             console.log("Response:", response);
-            setLoading(false);
+            //setLoading(false);
             setActions(response.data);
           })
           .catch((error) => {
@@ -267,27 +267,29 @@ const SlideShowComponent = () => {
   let carouselItems = slideContents.map((slideContent, index) => {
     let slideComponent;
     if (slideContent.template_id === "menu") {
-      slideComponent = [
-        (loading && (<div className="loader">
-          <div className="loader-inner">
-            <div className="loader-line-wrap">
-              <div className="loader-line"></div>
-            </div>
-            <div className="loader-line-wrap">
-              <div className="loader-line"></div>
-            </div>
-            <div className="loader-line-wrap">
-              <div className="loader-line"></div>
-            </div>
-            <div className="loader-line-wrap">
-              <div className="loader-line"></div>
-            </div>
-            <div className="loader-line-wrap">
-              <div className="loader-line"></div>
-            </div>
+      if (loading) {
+        slideComponent = [(<div className="loader">
+        <div className="loader-inner">
+          <div className="loader-line-wrap">
+            <div className="loader-line"></div>
           </div>
-        </div>))
-      ];
+          <div className="loader-line-wrap">
+            <div className="loader-line"></div>
+          </div>
+          <div className="loader-line-wrap">
+            <div className="loader-line"></div>
+          </div>
+          <div className="loader-line-wrap">
+            <div className="loader-line"></div>
+          </div>
+          <div className="loader-line-wrap">
+            <div className="loader-line"></div>
+          </div>
+        </div>
+      </div>)]
+      } else {
+        slideComponent = [(<div className="h-full w-full flex justify-center items-center text-5xl align-middle text-center">Slides<br/>LLM</div>)]
+      }
     } else if (slideContent.template_id === "first_slide") {
       slideComponent = (
         <IntroSlide
