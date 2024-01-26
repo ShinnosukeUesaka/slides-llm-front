@@ -302,7 +302,7 @@ const SlideShowComponent = () => {
         
         )
       } else {
-        slideComponent = (<div className="h-full w-full flex justify-center items-center text-5xl align-middle text-center">Slides<br/>LLM</div>)
+        slideComponent = (<div className="h-full w-full flex justify-center items-center flex-col"><div className="text-5xl text-center align-middle p-12">Slides<br/>LLM</div><div>Please keep your sound on</div></div>)
       }
     } else if (slideContent.template_id === "first_slide") {
       slideComponent = (
