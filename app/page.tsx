@@ -145,8 +145,13 @@ const SlideShowComponent = () => {
 
   const startEverything = () => {
     console.log("Starting everything");
+    if (loading) {
+      return;
+    }
     setLoading(true);
     const prompt = inputRef.current?.value;
+    // reset input field
+    inputRef.current!.value = "";
     axios
       .post("https://prd-slidesllm-cilyjke37q-an.a.run.app/conversations")
       .then((response) => {
