@@ -16,6 +16,11 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+import { type CarouselApi } from "@/components/ui/carousel"
+
+import axios from 'axios';
+
+
 
 
 
@@ -40,9 +45,9 @@ type PlayAudioAction = {
   }
 }
 
-type SlideContent = IntroSlideContent | ThreeElementsContent | TimelineContent;
-
-type VisibleContent = IntroSlideVisibleContent
+type SlideContent = MenuContent | IntroSlideContent | ThreeElementsContent | TimelineContent;
+ 
+type VisibleContent = MenuVisibleContent | IntroSlideVisibleContent | ThreeElementsVisibleContent | TimelineVisibleContent;
 
 type IntroSlideContent = {
   template_id: "first_slide";
@@ -57,12 +62,19 @@ type IntroSlideVisibleContent = {
   image: boolean;
 }
 
+type MenuContent = {
+  template_id: "menu";
+}
+
+type MenuVisibleContent = {}
+
 type ThreeElementsContent = {
   template_id: "three_elements";
   title: string;
   elements: {
     title: string;
     details: string;
+    image: string;
   }[];
 }
 
@@ -98,36 +110,68 @@ export default function Home() {
 
 
 const SlideShowComponent = () => {
+  const [waitingForInput, setWaitingForInput] = useState(true);
+  
   const [actions, setActions] = useState<Action[]>([]);
   const [currentActionIndex, setCurrentActionIndex] = useState(0);
-  const [slideContents, setSlideContents] = useState<SlideContent[]>([]);
-  const [visibleContent, setVisibleContent] = useState<VisibleContent>({
-    title: false,
-    sub_title: false,
-    image: false,
-  }); // 
-  const [visibleElements, setVisibleElements] = useState<{ [key: string]: boolean }>({});
-  const [updateCount, setUpdateCount] = useState<number>(0);
-  const [slideIndex, setSlideIndex] = useState(0);
-
+  const [slideContents, setSlideContents] = useState<SlideContent[]>([
+    {
+      template_id: "menu"
+    }
+  ]);
+  const [visibleContents, setVisibleContents] = useState<VisibleContent[]>([{}]); 
+  const [slideIndex, setSlideIndex] = useState(0); // content starts from 0, it is -1 when no content is shown
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null)
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  
+  const [api, setApi] = React.useState<CarouselApi>()
 
   useEffect(() => {
     setAudio(new Audio())
   }, []);
 
   useEffect(() => {
-
+    console.log("Slide contents changed:", slideIndex)
+    console.log(api?.canScrollNext())
+    // sleep for 1 second
+    setTimeout(() => {
+      console.log(api?.canScrollNext())
+      api?.scrollTo(slideIndex)
+    }, 500); // wait for 0.5 seconds until the elements are properly rendered and configured
   }, [slideContents])
+
 
   const startEverything = () => {
     console.log("Starting everything");
-    fetch('/test.json')
-      .then(response => response.json())
-      .then(data => {
-        console.log("Fetched data:", data); // Add this line to log the fetched data
-        setActions(data);
-      });
+    const prompt = inputRef.current?.value;
+    axios.post('https://prd-slidesllm-cilyjke37q-an.a.run.app/conversations')
+    .then(
+      response => {
+        console.log("Response:", response);
+        const conversationId = response.data.id;
+        axios.post(`https://prd-slidesllm-cilyjke37q-an.a.run.app/conversations/${conversationId}/message`, {
+          message: prompt
+        })
+        .then(
+          response => {
+            console.log("Response:", response);
+            setActions(response.data);
+          }
+        )
+        .catch(
+          error => {
+            console.error("Error:", error);
+          }
+        )
+      }
+    )
+    .catch(
+      error => {
+        console.error("Error:", error);
+      }
+    )
+    
   }
 
   const executeAction = (action: Action) => {
@@ -136,12 +180,13 @@ const SlideShowComponent = () => {
       case 'show_slide':
         setSlideContents(prev => [...prev, action.content]);
         if (action.content.template_id === 'first_slide') {
-          setVisibleElements({ title: false, sub_title: false, image: false });
+          setVisibleContents(prev => ([...prev, { title: false, sub_title: false, image: false }]));
         } else if (action.content.template_id === 'three_elements') {
-          setVisibleElements({ title: false, element_1: false, element_2: false, element_3: false });
+          setVisibleContents(prev => ([...prev, { title: false, element_1: false, element_2: false, element_3: false }]));
         } else if (action.content.template_id === 'timeline') {
-          setVisibleElements({ title: false, element_1: false, element_2: false, element_3: false });
+          setVisibleContents(prev => ([...prev, { title: false, element_1: false, element_2: false, element_3: false }]));
         }
+        setSlideIndex(prev => prev + 1)
         break;
 
       case 'display_element':
@@ -150,8 +195,9 @@ const SlideShowComponent = () => {
         action.content.ids.forEach((id: string) => {
           newVisibility[id] = true;
         });
-
-        setVisibleContent(prev => ({ ...prev, ...newVisibility }));
+        console.log("New visibility:", visibleContents)
+        setVisibleContents(prev => ([...prev.slice(0,-1), {...prev[prev.length-1], ...newVisibility}]));
+        
 
         break;
 
@@ -202,70 +248,42 @@ const SlideShowComponent = () => {
 
   let carouselItems = slideContents.map((slideContent, index) => {
     let slideComponent;
-    if (slideContent.template_id === 'first_slide') {
+    if (slideContent.template_id === 'menu') {
+      slideComponent = ([
+        <></>
+      ]);
+    } else if (slideContent.template_id === 'first_slide') {
       slideComponent = <IntroSlide
         content={slideContent}
-        visibleConent={visibleContent}
+        visibleContent={visibleContents[index] as IntroSlideVisibleContent}
       />
     } else if (slideContent.template_id === 'three_elements') {
       slideComponent = <ThreeCard
-        cardTitle={visibleElements.title ? slideContent.title : ''}
-        cardOneTitle={visibleElements.element_1 && slideContent.elements[0].title}
-        cardOneText={visibleElements.element_1 && slideContent.elements[0].details}
-        cardTwoTitle={visibleElements.element_2 && slideContent.elements[1].title}
-        cardTwoText={visibleElements.element_2 && slideContent.elements[1].details}
-        cardThreeTitle={visibleElements.element_3 && slideContent.elements[2].title}
-        cardThreeText={visibleElements.element_3 && slideContent.elements[2].details}
+        content = {slideContent}
+        visibleContent={visibleContents[index] as ThreeElementsVisibleContent}
       />
     } else if (slideContent.template_id === 'timeline') {
+      console.log("Timeline visible content:", visibleContents[index])
       slideComponent = <TimeLine
-        title={visibleElements.title ? slideContent.title : ''}
-        subtitle1={visibleElements.element_1 && slideContent.elements[0].title}
-        des1={visibleElements.element_1 && slideContent.elements[0].details}
-        time1={visibleElements.element_1 && slideContent.elements[0].time}
-        subtitle2={visibleElements.element_2 && slideContent.elements[1].title}
-        des2={visibleElements.element_2 && slideContent.elements[1].details}
-        time2={visibleElements.element_2 && slideContent.elements[1].time}
-        subtitle3={visibleElements.element_3 && slideContent.elements[2].title}
-        des3={visibleElements.element_3 && slideContent.elements[2].details}
-        time3={visibleElements.element_3 && slideContent.elements[2].time}
+        content = {slideContent}
+        visibleContent={visibleContents[index] as TimelineVisibleContent}
       />
     }
 
 
     return (
       <CarouselItem key={index} className="flex justify-center">
-        <div className="w-[100%] bg-zinc-100 max-w-screen-lg shadow-3xl rounded-lg aspect-[16/9] m-12 mb-16">
+        <div className="w-[100%] bg-zinc-100 max-w-screen-lg shadow-3xl rounded-2xl aspect-[16/9] m-12 mb-16">
           {slideComponent}
         </div>
       </CarouselItem>
     );
   });
 
-  if (slideContents.length === 0) {
-    console.log("hi")
-    carouselItems = ([
-      <CarouselItem key={0} className="flex justify-center">
-        <div className="w-[100%] bg-zinc-100 max-w-screen-lg shadow-3xl rounded-2xl aspect-[16/9] m-12 mb-16">
-        </div>
-      </CarouselItem>
-    ]);
-  };
-
-
-  const settings = {
-    dots: false,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    afterChange: () => setUpdateCount(updateCount + 1),
-    beforeChange: (current: number, next: number) => setSlideIndex(next)
-  };
   return (
 
     <div className="h-screen w-screen flex flex-col items-center justify-center gap-4 p-2 ">
-      <Carousel className="w-full">
+      <Carousel className="w-full" setApi={setApi}>
         <CarouselContent>
           {carouselItems}
         </CarouselContent>
@@ -274,13 +292,14 @@ const SlideShowComponent = () => {
       </div> */}
 
       <div className="w-full max-w-lg flex justify-between items-center relative -top-12 gap-4 bg-black rounded-3xl p-2">
-        <Label className="sr-only overflow:visible" htmlFor="input-field">
+        <Label className="sr-only" htmlFor="input-field">
           Input Field
         </Label>
         <Input
-          className="flex-grow text-white bg-black placeholder-white border-0 rounded-3xl focus:outline-none focus:ring-0"
+          className="flex-grow text-white bg-black placeholder-white border-0 rounded-3xl focus:outline-none focus-visible:ring-offset-0 focus:ring-0"
           id="input-field"
           placeholder="Enter text here"
+          ref={inputRef}
         />
         <Button className="bg-white text-black p-2 rounded-3xl" onClick={startEverything}>
           <svg
@@ -296,49 +315,7 @@ const SlideShowComponent = () => {
       </div>
     </div>
   );
-
-
-  // return (
-  //   <>
-  //     <div>
-  //       {slideContent && slideContent.template_id === 'first_slide' && visibleElements && (
-  //         <IntroSlide
-  //           imageURL={visibleElements.image ? slideContent.image : null}
-  //           title={visibleElements.title ? slideContent.title : ''}
-  //           description={visibleElements.sub_title ? slideContent.sub_title : ''}
-  //         />
-  //       )}
-  //       {slideContent && slideContent.template_id === 'three_elements' && visibleElements && (
-  //         <ThreeCard
-  //           cardTitle={visibleElements.title ? slideContent.title : ''}
-  //           cardOneTitle={visibleElements.element_1 && slideContent.elements[0].title}
-  //           cardOneText={visibleElements.element_1 && slideContent.elements[0].details}
-  //           cardTwoTitle={visibleElements.element_2 && slideContent.elements[1].title}
-  //           cardTwoText={visibleElements.element_2 && slideContent.elements[1].details}
-  //           cardThreeTitle={visibleElements.element_3 && slideContent.elements[2].title}
-  //           cardThreeText={visibleElements.element_3 && slideContent.elements[2].details}
-  //         />
-  //       )}
-  //       {slideContent && slideContent.template_id === 'timeline' && visibleElements && (<TimeLine
-  //         title={visibleElements.title ? slideContent.title : ''}
-  //         subtitle1={visibleElements.element_1 && slideContent.elements[0].title}
-  //         des1={visibleElements.element_1 && slideContent.elements[0].details}
-  //         time1={visibleElements.element_1 && slideContent.elements[0].time}
-  //         subtitle2={visibleElements.element_2 && slideContent.elements[1].title}
-  //         des2={visibleElements.element_2 && slideContent.elements[1].details}
-  //         time2={visibleElements.element_2 && slideContent.elements[1].time}
-  //         subtitle3={visibleElements.element_3 && slideContent.elements[2].title}
-  //         des3={visibleElements.element_3 && slideContent.elements[2].details}
-  //         time3={visibleElements.element_3 && slideContent.elements[2].time}
-  //       />
-  //       )}
-  //     </div>
-  //   </>
-  // );
-};
-
-
-
+}
 function Component() {
   return (
     <div className="flex flex-row items-center justify-center p-6 w-full h-full">
