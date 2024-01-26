@@ -1,3 +1,5 @@
+import Image from 'next/image'
+
 type ThreeCardProps = {
   content: {
     title: string;
@@ -21,7 +23,7 @@ type ThreeCardProps = {
         <div className="grid grid-cols-3 gap-4 mt-8">
           {content.elements.map((element, index) => (
             <div className={`flex flex-col items-center transition-opacity !duration-300 ${visibleContent[`element_${index + 1}` as keyof typeof visibleContent] ?  'opacity-100' : 'opacity-0'}`} key={index}>
-              <img
+              <Image
                 alt="Placeholder"
                 className="w-24 h-24 rounded-xl mb-2"
                 height="100"

@@ -1,3 +1,6 @@
+import Image from 'next/image'
+
+
 export interface IntroSlideProps {
   content: {
     title: string;
@@ -18,7 +21,7 @@ export default function IntroSlide({
   return (
     <section className="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-900 p-2">
       <div className="w-1/2 h-full flex items-center justify-center transition-opacity !duration-300" style={{ opacity: visibleContent.image ? 1 : 0}}>
-        <img
+        <Image
           alt="Profile Picture"
           className="w-full h-auto rounded-full object-cover"
           height="500"
