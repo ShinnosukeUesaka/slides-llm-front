@@ -267,8 +267,10 @@ const SlideShowComponent = () => {
   let carouselItems = slideContents.map((slideContent, index) => {
     let slideComponent;
     if (slideContent.template_id === "menu") {
-      if (loading) {
-        slideComponent = (<div className="loader">
+      if (!loading) {
+        slideComponent = (
+        <div className="flex flex-col items-center h-full w-full p-12">
+          <div className="w-full h-full">
         <div className="loader-inner" key={index}>
           <div className="loader-line-wrap">
             <div className="loader-line"></div>
@@ -286,7 +288,14 @@ const SlideShowComponent = () => {
             <div className="loader-line"></div>
           </div>
         </div>
-      </div>)
+      </div>
+      <h1 className="bottom-3/4">
+      Generation takes up to 3 minutes.
+      </h1>
+      
+      </div>
+        
+        )
       } else {
         slideComponent = (<div className="h-full w-full flex justify-center items-center text-5xl align-middle text-center">Slides<br/>LLM</div>)
       }
@@ -335,8 +344,9 @@ const SlideShowComponent = () => {
         <Input
           className="flex-grow text-white bg-black placeholder-white border-0 rounded-3xl focus:outline-none focus-visible:ring-offset-0 focus:ring-0"
           id="input-field"
-          placeholder="Enter text here"
+          placeholder="Write you want to learn"
           ref={inputRef}
+          onKeyDown={(event) => {if (event.key === "Enter") {startEverything()}}}
         />
         <Button
           className="bg-white text-black p-2 rounded-3xl"
